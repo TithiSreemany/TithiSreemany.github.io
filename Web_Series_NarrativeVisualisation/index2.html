@@ -3,30 +3,72 @@
 
   <head>
 
-    <title> Web Series Analysis Scene 2</title>
-    <h1 style="text-align:center"> Highest Rated web Series on IMDB -  Narrative Visualization</h1>
+    <title> Analysis of Web Series Genres and Ratings for 1950-1960</title>
+    <h1 style="text-align:center">Trends in Web Series over the Decades - A Narrative Visualization</h1>
     <script script src="https://d3js.org/d3.v5.min.js" aysnc></script>
 
-    <p> Dummy text.
-    </p>
+    <p>
+      For this Narrative Visualisation Project, I have analyzed a web series dataset to study which genres and ratings have appealed to viewers' interests over the years. 
+      The original dataset for this Narrative Visualisation has been taken from: https://www.kaggle.com/datasets/muralidharbhusal/50000-imdb-tv-and-web-series.
+      The datset was cleaned to remove irrelevant data and ensure data integrity. We also added some additional fields to the dataset to make it more informative.
+      The dataset includes fields such as series title, runtime, genre, rating, decade, release year, end year, duration, cast, and synopsis. 
+      The flow of this Narrative Visualisation is as follows:
+      <ul>
+        <li>Scene 1: Web Series Popularity over the Decades</li>
+        <li>Scene 2: Web Series Distribution across top-10 Genres for each decade</li>
+        <li>Scene 3: Avergae Rating of Web Series for top-10 Genres for each decate</li>
+        <li>Scene 4: Evolution of User Preferences over the Decades based on our Analysis</li>
+      </ul>
+      </p>
+
+      <style>
+        .button-container {
+            text-align: center;
+            margin: 20px;
+        }
+        .button-container button {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        
+    </style>
 
   </head>
 
   <body>
 
     <div style="text-align: center;">
-      <a href="index.html"><button>Scene 1</button></a>
-      <a href="index3.html"><button>Scene 3</button></a>
+      <a href="index.html"><button>Scene 1 : Web Series Popularity over the Decades </button></a>
+      <a href="index3.html"><button>Scene 3 : Ratings of Top-10 Genres over the Decades</button></a>
     </div>
 
-    <h3> Text</h3>
-
+    <h2><u>Top-10 Genres across each decade</u></h2>
+    
+    <div class="button-container">
+      <button onclick="updateChart('1950-1960')">1950-1960</button>
+      <button onclick="updateChart('1960-1970')">1960-1970</button>
+      <button onclick="updateChart('1970-1980')">1970-1980</button>
+      <button onclick="updateChart('1980-1990')">1980-1990</button>
+      <button onclick="updateChart('1990-2000')">1990-2000</button>
+      <button onclick="updateChart('2000-2010')">2000-2010</button>
+      <button onclick="updateChart('2010-2020')">2010-2020</button>
+    </div>
 
     <div id="chart"></div>
-    <script src = "barchart2.js" aysnc></script>
+    <script src = "donutchart.js" aysnc></script>
 
+    <h2>
+      Insights
+    </h2>
     <p>
-    text  
+      In the second scene of the Interactive Visualisation, we create a donut chart shows the distribution of web series with rating>5. The chart shows the top-10 genres in which the web series for the selected decade, and the rest of the genres are grouped together under "Other". 
+      The chart is interactive and allows the user to select the decade of interest ranging from 1950-1960 to 2010-2020 and the donut chart is updated dynamically according to the chosen year. 
+      The color-scheme to represent the Web Series Genres remain consistent across the decades for easier comparison.
+      The chart is also annotated with the number of web series in each genre and the contribution percentage of each genre. 
+    </p>
+    <p>
+      The chart is useful for understanding the popularity of different genres over the years and how the distribution of genres has evolved over time.
     </p>
 
   </body>
