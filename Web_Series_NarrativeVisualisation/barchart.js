@@ -4,7 +4,7 @@
 var barChartDiv = document.querySelector("#chart");
 
 // Dimensions
-var margin = { top: 10, right: 60, bottom: 160, left: 150 },
+var margin = { top: 40, right: 60, bottom: 160, left: 150 },
   width = 1200 - margin.left - margin.right,
   height = 500 - margin.top - margin.bottom;
 
@@ -53,7 +53,7 @@ d3.csv(csvFilePath).then(function (data) {
     .range([height, 0]);
 
   svg.append("g")
-    .attr("transform", "translate(0," + height + ")")
+    .attr("transform", "translate(0," + height+ ")")
     .call(d3.axisBottom(x))
     .selectAll("text")
     .attr("transform", "translate(-10,0)rotate(-45)")
@@ -61,7 +61,6 @@ d3.csv(csvFilePath).then(function (data) {
 
   svg.append("g")
     .call(d3.axisLeft(y));
-
   // Initializing Bars
   svg.selectAll("rect")
     .data(decadeCounts)
@@ -70,9 +69,27 @@ d3.csv(csvFilePath).then(function (data) {
     .attr("x", function (d) { return x(d.decade); })
     .attr("y", function (d) { return y(0); }) // Start bars at the baseline
     .attr("width", x.bandwidth())
-    .attr("height", function (d) { return height - y(0); }) // Start bars with height 0
+    .attr("height", function (d) {
+       return height - y(0); }) // Start bars with height 0
     .attr("fill", "pink")
     .attr("opacity", 0.5);
+
+  // Find the maximum value
+  var maxValue = d3.max(decadeCounts, function(d) { return d.count; });
+  
+  // Append text to the bar with the maximum value
+  svg.selectAll("rect")
+      .filter(function(d) { return d.count === maxValue; })
+      .each(function(d) {
+          console.log(d.count, maxValue);
+          svg.append("text")
+              .attr("x", x(d.decade) + x.bandwidth() / 2)  // Center the text on the bar
+              .attr("y", y(d.count) - 20)  // Position the text above the bar
+              .attr("dy", ".75em")
+              .attr("text-anchor", "middle")
+              .text("Steady Rise in Web-Series Releases with the highest count of "+ d.count)  // Display the value (modify according to your data)
+              .attr("fill", "red");  // Set text color (can be modified)
+      });
 
   // Loading Bars with Animation
   svg.selectAll("rect")
@@ -110,7 +127,7 @@ d3.csv(csvFilePath).then(function (data) {
         case "move":
 
           tooltip.html('<u>' + d.decade + '</u>'
-                      + "<br>" + "Nummber of Web Series Released: "+ d.count)
+                      + "<br>" + "Number of Web Series Released: "+ d.count)
             .style('top', (d3.event.pageY + 10) + 'px')
             .style('left', (d3.event.pageX + 10) + 'px');
           return;
