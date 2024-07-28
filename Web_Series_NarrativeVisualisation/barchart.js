@@ -23,28 +23,33 @@ var csvFilePath = "tv_series.csv"; // Ensure the correct path to the CSV file
 d3.csv(csvFilePath).then(function (data) {
   console.log("CSV Data Loaded:", data);
 
-  // Get unique series names and sort by rating in descending order
-  const uniqueSeries = Array.from(new Set(data.map(d => d.series_title)))
-    .map(series_title => {
+  // Process data to count unique series titles per decade
+  var decadeCounts = d3.nest()
+    .key(function (d) { return d.decade; })
+    .rollup(function (v) {
+      return d3.set(v.map(function (d) { return d.series_title; })).size();
+    })
+    .entries(data)
+    .map(function (d) {
       return {
-        series_title: series_title,
-        rating: Math.max(...data.filter(d => d.series_title === series_title).map(d => +d.rating)),
-        genre: data.find(d => d.series_title === series_title).genre
+        decade: d.key,
+        count: d.value
       };
     });
 
-  // Sort data by rating in descending order and keep only top 100
-  const top100Series = uniqueSeries.sort((a, b) => d3.descending(a.rating, b.rating))
-    .slice(0, 100);
+  // Sort the data by decade
+  decadeCounts.sort(function (a, b) {
+    return d3.ascending(a.decade, b.decade);
+  });
 
   // X and Y plus Axes
   var x = d3.scaleBand()
-    .domain(top100Series.map(d => d.series_title))
+    .domain(decadeCounts.map(function (d) { return d.decade; }))
     .range([0, width])
     .padding(0.2);
 
   var y = d3.scaleLinear()
-    .domain([8.5, 10]) // Set y-axis from 0 to 10
+    .domain([0, d3.max(decadeCounts, function (d) { return d.count; })]) // Set y-axis based on max count
     .range([height, 0]);
 
   svg.append("g")
@@ -57,33 +62,26 @@ d3.csv(csvFilePath).then(function (data) {
   svg.append("g")
     .call(d3.axisLeft(y));
 
-  // Coloring Bars
-  var genres = Array.from(new Set(top100Series.map(d => d.genre)));
-
-  // Color coding the values based on genre
-  var color = d3.scaleOrdinal()
-    .domain(genres)
-    .range(d3.schemeTableau10);
-
   // Initializing Bars
   svg.selectAll("rect")
-    .data(top100Series)
+    .data(decadeCounts)
     .enter()
     .append("rect")
-    .attr("x", d => x(d.series_title))
-    .attr("y", d => y(0)) // Start bars at the baseline
+    .attr("x", function (d) { return x(d.decade); })
+    .attr("y", function (d) { return y(0); }) // Start bars at the baseline
     .attr("width", x.bandwidth())
-    .attr("height", d => height - y(0)) // Start bars with height 0
-    .attr("fill", d => color(d.genre))
+    .attr("height", function (d) { return height - y(0); }) // Start bars with height 0
+    .attr("fill", "pink")
     .attr("opacity", 0.5);
 
   // Loading Bars with Animation
   svg.selectAll("rect")
+    .data(decadeCounts)
     .transition()
     .duration(500)
-    .attr("y", d => y(d.rating))
-    .attr("height", d => height - y(d.rating))
-    .delay((d, i) => i * 100);
+    .attr("y", function (d) { return y(d.count); })
+    .attr("height", function (d) { return height - y(d.count); })
+    .delay(function (d, i) { return i * 100; });
 
   // Tooltip code
   var tooltip = d3.select("#chart")
@@ -97,46 +95,29 @@ d3.csv(csvFilePath).then(function (data) {
     .style("border-radius", "5px")
     .style("padding", "5px");
 
-  svg.selectAll("rect")
-    .on("mouseover", function (event, d) {
-      d3.select(this).style("opacity", 1);
-      tooltip.style("opacity", 1);
-    })
-    .on("mousemove", function (event, d) {
-      tooltip.html('<u>' + d.series_title + '</u>' +
-        "<br>" + "Rating: " + d.rating +
-        "<br>" + "Genre: " + d.genre)
-        .style('top', (event.pageY + 10) + 'px')
-        .style('left', (event.pageX + 10) + 'px');
-    })
-    .on("mouseout", function (d) {
-      d3.select(this).style("opacity", 0.5);
-      tooltip.style("opacity", 0);
-    });
+    svg.selectAll("rect")
+    .data(decadeCounts)
+    .on("mouseover", function(d) { this.style.opacity = 1; tooltipFunction(d, "over");})
+    .on("mousemove", function(d) { tooltipFunction(d, "move");})
+    .on("mouseout", function(d) { this.style.opacity = 0.5; tooltipFunction(d, "out");})
 
-  // Legend Code
-  var size = 20;
-  svg.selectAll("dots")
-    .data(genres)
-    .enter()
-    .append("rect")
-    .attr("x", width * 0.85)
-    .attr("y", (d, i) => height / 20 + i * (size + 5))
-    .attr("width", size)
-    .attr("height", size)
-    .style("fill", d => color(d));
+    function tooltipFunction(d, action) {
 
-  svg.selectAll("labels")
-    .data(genres)
-    .enter()
-    .append("text")
-    .attr("x", width * 0.85 + size * 1.2)
-    .attr("y", (d, i) => height / 20 + i * (size + 5) + (size * 0.5))
-    .style("fill", "black")
-    .text(d => d)
-    .attr("text-anchor", "left")
-    .style("alignment-baseline", "middle");
+      switch (action) {
+        case "over":
+          tooltip.style("opacity", 1);
+          return;
+        case "move":
 
-}).catch(error => {
+          tooltip.html('<u>' + d.decade + '</u>'
+                      + "<br>" + "Nummber of Web Series Released: "+ d.count)
+            .style('top', (d3.event.pageY + 10) + 'px')
+            .style('left', (d3.event.pageX + 10) + 'px');
+          return;
+        default:
+          tooltip.style("opacity", 0);
+      }
+  }
+}).catch(function (error) {
   console.error("Error loading the CSV file:", error);
 });
