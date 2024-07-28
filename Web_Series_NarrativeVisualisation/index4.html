@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+
+    <title> Web Series Narrative Visualisation Scene-1 </title>
+    <h1 style="text-align:center">Trends in Web Series over the Decades - A Narrative Visualization</h1>
+    <script script src="https://d3js.org/d3.v5.min.js" aysnc></script>
+    <style>
+      .tooltip {
+          font-size: 12px;
+      }
+      .legend rect {
+          stroke-width: 2;
+      }
+    </style>
+
+    <p>
+      For this Narrative Visualisation Project, I have analyzed a web series dataset to study which genres and ratings have appealed to viewers' interests over the years. 
+      The original dataset for this Narrative Visualisation has been taken from: https://www.kaggle.com/datasets/muralidharbhusal/50000-imdb-tv-and-web-series.
+      The datset was cleaned to remove irrelevant data and ensure data integrity. We also added some additional fields to the dataset to make it more informative.
+      The dataset includes fields such as series title, runtime, genre, rating, decade, release year, end year, duration, cast, and synopsis. 
+      The flow of this Narrative Visualisation is as follows:
+      <ul>
+        <li>Scene 1: Web Series Popularity over the Decades</li>
+        <li>Scene 2: Web Series Distribution across top-10 Genres for each decade</li>
+        <li>Scene 3: Avergae Rating of Web Series for top-10 Genres for each decate</li>
+        <li>Scene 4: Evolution of User Preferences over the Decades based on our Analysis</li>
+      </ul>
+      </p>
+
+  </head>
+
+  <body>
+
+    <div style="text-align: center;">
+      <a href="index3.html"><button>Scene 3 : Ratings of Top-10 Genres over the Decades</button></a>
+      <a href="index.html"><button>Scene 1 : Web Series Popularity over the Decades</button></a>
+    </div>
+
+    <h2> <u>Line Chart Evolution of User Preferences Over the Decades</u></h2>
+
+    <div id="chart"></div>
+    
+
+
+    <h2>
+      <u>Insights</u>
+    </h2>
+
+    <p>
+      This interactive visualization displays a bar chart representing the number of unique web series released in each decade. The data is aggregated to show the count of distinct series titles for each decade, providing an overview of the trends in web series production over time.
+    </p>
+
+    <p>
+      The visualization reveals the following insights:
+      <ul>
+        <li>There is a noticeable upward trend in the number of web series released over the decades. This suggests a growing interest in web series as a form of entertainment, likely due to the rise of streaming platforms and digital media consumption.</li>
+        <li>The first two decades (1930-1940, 1940-1950) show significantly fewer web series than the other decades. This is expected since web series as a format gained popularity more recently, and the availability of data from earlier decades might be limited.</li>
+        <li>The data for the last decade (2020-2030) is incomplete, with values only till 2023. This partial data might not accurately reflect the total production for this period, especially since the decade is ongoing.</li>
+      </ul>
+       </p>
+
+
+       <h2>
+        <u>Conclusion</u>
+      </h2>
+      <p>
+        The interactive bar chart effectively highlights the evolution and increasing popularity of web series over time. Since there is limited data for before 1940 and limited data after 2020, we shall not include them in our analysis. Moving forward, we shall analyse the trends in web series genres and ratings for the decades in the range of 1950 to 2020 to gain further insights into the web series landscape.
+        </p>
+
+
+
+    <script src = "./linechart.js" aysnc></script>
+
+  </body>
+</html>
